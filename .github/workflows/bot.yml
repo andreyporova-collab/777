@@ -30,7 +30,7 @@ jobs:
       - name: Run bot
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          WEBAPP_URL: ${{ vars.WEBAPP_URL || 'https://andreyporova-collab.github.io/777/' }}
+          WEBAPP_URL: ${{ vars.WEBAPP_URL || 'https://andreyporova-collab.github.io/777/?v=19' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: bot
         # SIGINT через 5ч25м, чтобы шаг завершился до лимита job
