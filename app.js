@@ -15,7 +15,6 @@ const reelEls = [...document.querySelectorAll('.reel')];
 const machine = document.getElementById('machine');
 const spinBtn = document.getElementById('spin');
 const spinLabel = spinBtn.querySelector('span');
-const resetBtn = document.getElementById('reset');
 const counterEl = document.getElementById('counter');
 const totalEl = document.getElementById('total');
 const resultEl = document.getElementById('result');
@@ -55,11 +54,9 @@ function renderState() {
   if (isFinished()) {
     spinBtn.disabled = true;
     spinLabel.textContent = 'СЦЕНАРИЙ ОКОНЧЕН';
-    resetBtn.classList.add('primary');
   } else {
     spinBtn.disabled = spinning;
     spinLabel.textContent = 'КРУТИТЬ';
-    resetBtn.classList.remove('primary');
   }
 }
 
@@ -162,27 +159,7 @@ function closeWin() {
   }
 }
 
-function reset() {
-  const message = 'Начать сценарий сначала?';
-  if (tg?.showConfirm) {
-    tg.showConfirm(message, (confirmed) => {
-      if (confirmed) doReset();
-    });
-  } else if (window.confirm(message)) {
-    doReset();
-  }
-}
-
-function doReset() {
-  index = 0;
-  saveIndex();
-  resultEl.classList.add('hidden');
-  closeWin();
-  renderState();
-}
-
 spinBtn.addEventListener('click', spin);
-resetBtn.addEventListener('click', reset);
 winClose.addEventListener('click', closeWin);
 winEl.addEventListener('click', (e) => { if (e.target === winEl) closeWin(); });
 renderState();

@@ -179,29 +179,6 @@ html, body {
   opacity: 0.75;
 }
 
-.reset-btn {
-  margin-top: 6px;
-  padding: 12px 22px;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--rose-soft);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 209, 224, 0.45);
-  border-radius: 14px;
-  cursor: pointer;
-}
-
-/* Когда сценарий окончен — кнопка становится основной */
-.reset-btn.primary {
-  color: #3b0a24;
-  background: linear-gradient(180deg, #ffe89a, var(--gold-deep));
-  border: none;
-  box-shadow: 0 5px 0 #a86a12;
-  font-size: 17px;
-  font-weight: 700;
-  padding: 14px 28px;
-}
 
 /* ---------- Окно выигрыша ---------- */
 .modal {
