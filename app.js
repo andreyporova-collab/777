@@ -183,11 +183,14 @@ function closeWin() {
   }
 }
 
-// Скрытый сброс для теста: удерживать «наш вечер» 5 секунд.
-// Сценарий начинается заново, без подтверждения и без подсказок на экране.
-const HOLD_RESET_MS = 5000;
+// Скрытый сброс для теста: 10 нажатий по надписи «наш вечер».
+// Если между нажатиями пауза больше 3 секунд, счётчик начинается заново.
+// Без подтверждения и без подсказок на экране.
+const RESET_TAPS = 10;
+const TAP_WINDOW_MS = 3000;
 const kickerEl = document.querySelector('.kicker');
-let holdTimer = null;
+let tapCount = 0;
+let lastTapAt = 0;
 
 function resetScript() {
   if (spinning) return;
@@ -199,24 +202,16 @@ function resetScript() {
   renderState();
 }
 
-function startHold(e) {
-  if (e.button > 0) return;
-  clearTimeout(holdTimer);
-  holdTimer = setTimeout(() => {
-    holdTimer = null;
+kickerEl.addEventListener('click', () => {
+  const now = Date.now();
+  tapCount = now - lastTapAt > TAP_WINDOW_MS ? 1 : tapCount + 1;
+  lastTapAt = now;
+  if (tapCount >= RESET_TAPS) {
+    tapCount = 0;
     resetScript();
     tg?.HapticFeedback?.notificationOccurred('success');
-  }, HOLD_RESET_MS);
-}
-
-function cancelHold() {
-  clearTimeout(holdTimer);
-  holdTimer = null;
-}
-
-kickerEl.addEventListener('pointerdown', startHold);
-['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => kickerEl.addEventListener(ev, cancelHold));
-kickerEl.addEventListener('contextmenu', (e) => e.preventDefault());
+  }
+});
 
 spinBtn.addEventListener('click', spin);
 winClose.addEventListener('click', closeWin);
