@@ -10,8 +10,9 @@ const REEL_DELAY = 600;   // задержка между остановками 
 const TICK_MS = 90;       // частота смены кадров при вращении
 const CONFETTI_COLORS = ['#ffd76a', '#ff6fa5', '#ffd1e0', '#7ad7ff', '#b28cff'];
 
-const reelImgs = [...document.querySelectorAll('.reel img')];
 const reelEls = [...document.querySelectorAll('.reel')];
+const midImgs = reelEls.map((reel) => reel.querySelector('.mid'));
+const cellImgs = reelEls.map((reel) => [...reel.querySelectorAll('.cell')]); // верх и низ
 const machine = document.getElementById('machine');
 const spinBtn = document.getElementById('spin');
 const spinLabel = spinBtn.querySelector('span');
@@ -23,29 +24,26 @@ const winIcon = document.getElementById('win-icon');
 const winPrize = document.getElementById('win-prize');
 const winNote = document.getElementById('win-note');
 const winClose = document.getElementById('win-close');
+const prizeGrid = document.getElementById('prize-grid');
 
 totalEl.textContent = SCRIPT.length;
 winNote.textContent = WIN_NOTE;
 
-// Таблица призов строится из PRIZES, чтобы всегда совпадать с барабанами
-function renderPrizeTable() {
-  const rows = document.getElementById('prize-rows');
+// Сетка призов строится из PRIZES, чтобы всегда совпадать с барабанами
+function renderPrizeGrid() {
   for (const prize of Object.values(PRIZES)) {
-    const tr = document.createElement('tr');
-    const iconTd = document.createElement('td');
+    const tile = document.createElement('div');
+    tile.className = 'prize-tile';
     const img = document.createElement('img');
     img.src = prize.icon;
     img.alt = '';
-    img.width = 40;
-    img.height = 40;
-    iconTd.appendChild(img);
-    const nameTd = document.createElement('td');
-    nameTd.textContent = prize.tableName || prize.name;
-    tr.append(iconTd, nameTd);
-    rows.appendChild(tr);
+    const label = document.createElement('span');
+    label.textContent = prize.tableName || prize.name;
+    tile.append(img, label);
+    prizeGrid.appendChild(tile);
   }
 }
-renderPrizeTable();
+renderPrizeGrid();
 
 // Сколько спинов уже сделано: от 0 до SCRIPT.length. Больше сценарий не идёт по кругу.
 let index = loadIndex();
@@ -68,15 +66,15 @@ function randomSymbol() {
   return PRIZES[SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]].icon;
 }
 
-// Обновляет счётчик, кнопку «КРУТИТЬ» и состояние «сценарий окончен»
+// Обновляет счётчик, кнопку и состояние «попыток не осталось»
 function renderState() {
   counterEl.textContent = isFinished() ? SCRIPT.length : index + 1;
   if (isFinished()) {
     spinBtn.disabled = true;
-    spinLabel.textContent = 'ПОПЫТОК НЕ ОСТАЛОСЬ!';
+    spinLabel.textContent = 'Попыток не осталось!';
   } else {
     spinBtn.disabled = spinning;
-    spinLabel.textContent = 'КРУТИТЬ';
+    spinLabel.textContent = 'Крутить';
   }
 }
 
@@ -91,25 +89,31 @@ function spin() {
   index += 1;
   saveIndex();
 
-  // Все барабаны начинают «мелькать»
-  const timers = reelImgs.map((img, i) => {
-    reelEls[i].classList.remove('stop');
-    reelEls[i].classList.add('spinning');
-    return setInterval(() => { img.src = randomSymbol(); }, TICK_MS);
+  // Все барабаны начинают «мелькать» (все три видимых символа)
+  const timers = reelEls.map((reel, i) => {
+    reel.classList.remove('stop');
+    reel.classList.add('spinning');
+    return setInterval(() => {
+      cellImgs[i].forEach((img) => { img.src = randomSymbol(); });
+      midImgs[i].src = randomSymbol();
+    }, TICK_MS);
   });
 
-  // Останавливаем по очереди на заранее заданных символах
+  // Останавливаем по очереди: центр — заранее заданный символ, верх и низ — соседние
   let stopped = 0;
-  reelImgs.forEach((img, i) => {
+  reelEls.forEach((reel, i) => {
     setTimeout(() => {
       clearInterval(timers[i]);
-      img.src = PRIZES[step.symbols[i]].icon;
-      reelEls[i].classList.remove('spinning');
-      reelEls[i].classList.add('stop');
+      const [top, bottom] = cellImgs[i];
+      top.src = randomSymbol();
+      bottom.src = randomSymbol();
+      midImgs[i].src = PRIZES[step.symbols[i]].icon;
+      reel.classList.remove('spinning');
+      reel.classList.add('stop');
       tg?.HapticFeedback?.impactOccurred('light');
 
       stopped++;
-      if (stopped === reelImgs.length) finish(step);
+      if (stopped === reelEls.length) finish(step);
     }, SPIN_BASE + i * REEL_DELAY);
   });
 }
