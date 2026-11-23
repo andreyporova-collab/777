@@ -225,4 +225,33 @@ kickerEl.addEventListener('click', () => {
 spinBtn.addEventListener('click', spin);
 winClose.addEventListener('click', closeWin);
 winEl.addEventListener('click', (e) => { if (e.target === winEl) closeWin(); });
+
+// Сброс из админки: bot/data/reset.json меняется, когда админ сбрасывает спины.
+// Счётчики сбросов запоминаем в браузере и сравниваем при каждом открытии.
+const USER_ID = String(tg?.initDataUnsafe?.user?.id || 'local');
+
+async function syncReset() {
+  try {
+    const res = await fetch(`bot/data/reset.json?t=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
+    const allEpoch = Number(data.all || 0);
+    const userEpoch = Number((data.users || {})[USER_ID] || 0);
+
+    const seenAll = Number(localStorage.getItem('reset-seen-all') || 0);
+    const seenUser = Number(localStorage.getItem(`reset-seen-user-${USER_ID}`) || 0);
+    if (allEpoch > seenAll || userEpoch > seenUser) {
+      index = 0;
+      saveIndex();
+    }
+    localStorage.setItem('reset-seen-all', String(allEpoch));
+    localStorage.setItem(`reset-seen-user-${USER_ID}`, String(userEpoch));
+  } catch {
+    // Нет связи или открыто без сервера: спины остаются как были
+  } finally {
+    renderState();
+  }
+}
+
 renderState();
+syncReset();
