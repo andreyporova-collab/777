@@ -67,11 +67,19 @@ async function handleWin(chatId, rawData) {
     return;
   }
 
-  await callApi('sendPhoto', {
-    chat_id: chatId,
-    photo: new URL(entry.photo, WEBAPP_URL).href,
-    caption: `${entry.caption}\n\n${FOOTER}`,
-  });
+  const caption = `${entry.caption}\n\n${FOOTER}`;
+  console.log(`Выигрыш: ${payload.prize}`);
+  try {
+    await callApi('sendPhoto', {
+      chat_id: chatId,
+      photo: new URL(entry.photo, WEBAPP_URL).href,
+      caption,
+    });
+  } catch (err) {
+    // Если фото не отправилось, всё равно присылаем текст приза
+    console.error('Фото не отправилось, шлю текстом:', err.message);
+    await callApi('sendMessage', { chat_id: chatId, text: caption });
+  }
 }
 
 async function handleMessage(message) {

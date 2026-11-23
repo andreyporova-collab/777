@@ -145,6 +145,10 @@ function showLose() {
 // Выигрыш, о котором ещё не сообщили боту
 let pendingWin = null;
 
+// Если игрок закрыл мини-приложение, не нажав «Ура!», приз всё равно уйдёт боту через 3 секунды
+const AUTO_SEND_WIN_MS = 3000;
+let autoSendTimer = null;
+
 function showWin(prizeId) {
   const prize = PRIZES[prizeId];
   pendingWin = prizeId;
@@ -152,6 +156,10 @@ function showWin(prizeId) {
   winPrize.textContent = prize.name;
   winEl.classList.remove('hidden');
   confetti();
+  clearTimeout(autoSendTimer);
+  autoSendTimer = setTimeout(() => {
+    if (pendingWin) closeWin();
+  }, AUTO_SEND_WIN_MS);
 }
 
 function confetti() {
@@ -172,6 +180,7 @@ function confetti() {
 // sendData закрывает мини-приложение, поэтому делаем это только после того, как игрок всё увидел.
 function closeWin() {
   winEl.classList.add('hidden');
+  clearTimeout(autoSendTimer);
   if (pendingWin) {
     const payload = JSON.stringify({ type: 'win', prize: pendingWin });
     pendingWin = null;
