@@ -61,10 +61,10 @@ async function main() {
   await callApi('setMyCommands', { commands: COMMANDS });
   console.log('команды: ok');
 
-  await callApi('setChatMenuButton', {
-    menu_button: { type: 'web_app', text: MENU_BUTTON_TEXT, web_app: { url: WEBAPP_URL } },
-  });
-  console.log('кнопка меню: ok');
+  // Кнопка меню — стандартная. Слот открывается только кнопкой на клавиатуре внизу:
+  // из меню Telegram не передаёт боту данные о выигрыше (sendData работает только из клавиатуры).
+  await callApi('setChatMenuButton', { menu_button: { type: 'default' } });
+  console.log('кнопка меню: стандартная');
 
   console.log('Готово. Аватарку и баннер загрузи через @BotFather.');
 }

@@ -185,7 +185,14 @@ function closeWin() {
     const payload = JSON.stringify({ type: 'win', prize: pendingWin });
     pendingWin = null;
     if (tg?.sendData) {
-      tg.sendData(payload);
+      try {
+        tg.sendData(payload);
+      } catch (err) {
+        // Открыто не кнопкой на клавиатуре, и приз не ушёл боту: говорим об этом прямо
+        console.error('sendData не сработал:', err);
+        resultEl.textContent = 'Приз не отправился боту. Открой слот кнопкой «🎰 Крутить слот» внизу чата и крути снова.';
+        resultEl.classList.remove('hidden');
+      }
     } else {
       console.log('Вне Telegram отправка пропущена:', payload);
     }
