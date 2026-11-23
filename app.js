@@ -27,6 +27,26 @@ const winClose = document.getElementById('win-close');
 totalEl.textContent = SCRIPT.length;
 winNote.textContent = WIN_NOTE;
 
+// Таблица призов строится из PRIZES, чтобы всегда совпадать с барабанами
+function renderPrizeTable() {
+  const rows = document.getElementById('prize-rows');
+  for (const prize of Object.values(PRIZES)) {
+    const tr = document.createElement('tr');
+    const iconTd = document.createElement('td');
+    const img = document.createElement('img');
+    img.src = prize.icon;
+    img.alt = '';
+    img.width = 40;
+    img.height = 40;
+    iconTd.appendChild(img);
+    const nameTd = document.createElement('td');
+    nameTd.textContent = prize.tableName || prize.name;
+    tr.append(iconTd, nameTd);
+    rows.appendChild(tr);
+  }
+}
+renderPrizeTable();
+
 // Сколько спинов уже сделано: от 0 до SCRIPT.length. Больше сценарий не идёт по кругу.
 let index = loadIndex();
 let spinning = false;

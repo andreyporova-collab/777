@@ -180,6 +180,51 @@ html, body {
 }
 
 
+/* ---------- Таблица призов ---------- */
+.prizes-card {
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px 14px 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 209, 224, 0.25);
+}
+
+.prizes-title {
+  margin: 0 0 10px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  color: var(--gold);
+}
+
+.prize-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.prize-table th {
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--rose-soft);
+  opacity: 0.75;
+  text-align: left;
+}
+
+.prize-table td {
+  padding: 6px 8px;
+  border-top: 1px solid rgba(255, 209, 224, 0.15);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.prize-table td img {
+  display: block;
+}
+
 /* ---------- Окно выигрыша ---------- */
 .modal {
   position: fixed;

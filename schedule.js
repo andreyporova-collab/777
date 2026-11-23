@@ -10,7 +10,7 @@ const PRIZES = {
   p100:    { name: '100 €',   icon: 'assets/prizes/p100.svg' },
   p500:    { name: '500 €',   icon: 'assets/prizes/p500.svg' },
   coffee:  { name: 'Кофе',    icon: 'assets/prizes/coffee.svg' },
-  jackpot: { name: 'Джекпот', icon: 'assets/prizes/jackpot.svg' },
+  jackpot: { name: 'Джекпот', tableName: 'SEX', icon: 'assets/prizes/jackpot.svg' },
   flowers: { name: 'Цветы',   icon: 'assets/prizes/flowers.svg' },
   candy:   { name: 'Конфеты', icon: 'assets/prizes/candy.svg' },
 };
