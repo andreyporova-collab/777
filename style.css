@@ -225,6 +225,11 @@ html, body {
   display: block;
 }
 
+.prize-table td:last-child {
+  font-size: 18px;
+  font-weight: 600;
+}
+
 /* ---------- Окно выигрыша ---------- */
 .modal {
   position: fixed;
