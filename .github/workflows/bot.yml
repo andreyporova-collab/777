@@ -1,0 +1,36 @@
+name: Telegram bot
+
+# Бот работает через long polling, поэтому держим его запущенным внутри job.
+# Один job длится до ~5.5 часов, затем следующий запуск по расписанию подхватывает polling.
+# Новые запуски встают в очередь (concurrency), два бота одновременно не работают.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
+
+concurrency:
+  group: telegram-bot
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run bot
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          WEBAPP_URL: ${{ vars.WEBAPP_URL }}
+        working-directory: bot
+        # SIGINT через 5ч25м, чтобы шаг завершился до лимита job
+        run: timeout -s INT 19500 node bot.js
