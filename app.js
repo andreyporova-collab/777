@@ -3,7 +3,8 @@ const tg = window.Telegram?.WebApp;
 tg?.ready();
 tg?.expand();
 
-const STORAGE_KEY = 'romantic-slot-index';
+// Ключ v2: старый прогресс от прошлых версий не подхватывается
+const STORAGE_KEY = 'romantic-slot-v2';
 const SPIN_BASE = 1300;   // мс до остановки первого барабана
 const REEL_DELAY = 600;   // задержка между остановками барабанов
 const TICK_MS = 90;       // частота смены кадров при вращении
@@ -13,6 +14,7 @@ const reelImgs = [...document.querySelectorAll('.reel img')];
 const reelEls = [...document.querySelectorAll('.reel')];
 const machine = document.getElementById('machine');
 const spinBtn = document.getElementById('spin');
+const spinLabel = spinBtn.querySelector('span');
 const resetBtn = document.getElementById('reset');
 const counterEl = document.getElementById('counter');
 const totalEl = document.getElementById('total');
@@ -26,36 +28,50 @@ const winClose = document.getElementById('win-close');
 totalEl.textContent = SCRIPT.length;
 winNote.textContent = WIN_NOTE;
 
-// Текущая позиция в сценарии (сохраняется между открытиями)
+// Сколько спинов уже сделано: от 0 до SCRIPT.length. Больше сценарий не идёт по кругу.
 let index = loadIndex();
 let spinning = false;
 
 function loadIndex() {
   const saved = Number(localStorage.getItem(STORAGE_KEY));
-  return Number.isInteger(saved) && saved >= 0 ? saved % SCRIPT.length : 0;
+  return Number.isInteger(saved) && saved >= 0 && saved <= SCRIPT.length ? saved : 0;
 }
 
 function saveIndex() {
   localStorage.setItem(STORAGE_KEY, String(index));
 }
 
+function isFinished() {
+  return index >= SCRIPT.length;
+}
+
 function randomSymbol() {
   return PRIZES[SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]].icon;
 }
 
-function renderCounter() {
-  counterEl.textContent = index + 1;
+// Обновляет счётчик, кнопку «КРУТИТЬ» и состояние «сценарий окончен»
+function renderState() {
+  counterEl.textContent = isFinished() ? SCRIPT.length : index + 1;
+  if (isFinished()) {
+    spinBtn.disabled = true;
+    spinLabel.textContent = 'СЦЕНАРИЙ ОКОНЧЕН';
+    resetBtn.classList.add('primary');
+  } else {
+    spinBtn.disabled = spinning;
+    spinLabel.textContent = 'КРУТИТЬ';
+    resetBtn.classList.remove('primary');
+  }
 }
 
 function spin() {
-  if (spinning) return;
+  if (spinning || isFinished()) return;
   spinning = true;
-  spinBtn.disabled = true;
+  renderState();
   resultEl.classList.add('hidden');
 
-  // Берём очередной шаг сценария и двигаем указатель по кругу
+  // Берём очередной шаг сценария строго по порядку
   const step = SCRIPT[index];
-  index = (index + 1) % SCRIPT.length;
+  index += 1;
   saveIndex();
 
   // Все барабаны начинают «мелькать»
@@ -85,9 +101,8 @@ function finish(step) {
   const [a, b, c] = step.symbols;
   const isWin = a === b && b === c;
 
-  renderCounter();
   spinning = false;
-  spinBtn.disabled = false;
+  renderState();
 
   if (isWin) {
     tg?.HapticFeedback?.notificationOccurred('success');
@@ -146,12 +161,13 @@ function reset() {
 function doReset() {
   index = 0;
   saveIndex();
-  renderCounter();
   resultEl.classList.add('hidden');
+  closeWin();
+  renderState();
 }
 
 spinBtn.addEventListener('click', spin);
 resetBtn.addEventListener('click', reset);
 winClose.addEventListener('click', closeWin);
 winEl.addEventListener('click', (e) => { if (e.target === winEl) closeWin(); });
-renderCounter();
+renderState();
