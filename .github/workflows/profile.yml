@@ -1,0 +1,28 @@
+name: Bot profile
+
+# Запускается вручную: ставит имя, описания, команды и кнопку меню бота.
+# Токен берётся из секрета BOT_TOKEN, тот же, что у бота.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  set-profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Apply profile
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          WEBAPP_URL: ${{ vars.WEBAPP_URL || 'https://andreyporova-collab.github.io/777/' }}
+        working-directory: bot
+        run: npm run profile
