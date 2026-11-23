@@ -1,11 +1,14 @@
 * { box-sizing: border-box; }
 
 :root {
-  --bg1: #2a0a1f;
-  --bg2: #5b1a40;
-  --accent: #ff6fa5;
+  --plum: #2a0a1f;
+  --berry: #6b1d4a;
+  --rose: #ff6fa5;
+  --rose-soft: #ffd1e0;
   --gold: #ffd76a;
+  --gold-deep: #e0a22c;
   --text: #fff4f8;
+  --radius: 24px;
 }
 
 html, body {
@@ -13,34 +16,73 @@ html, body {
   min-height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: var(--text);
-  background: radial-gradient(circle at top, var(--bg2), var(--bg1)) fixed;
+  background: radial-gradient(120% 80% at 50% 0%, #7a2358 0%, var(--berry) 35%, var(--plum) 100%) fixed;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+.hidden { display: none !important; }
+
+/* ---------- Фон: мягкие сердечки-пятна ---------- */
+.bg-hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 111, 165, 0.18) 0 60px, transparent 61px),
+    radial-gradient(circle at 85% 35%, rgba(255, 215, 106, 0.12) 0 90px, transparent 91px),
+    radial-gradient(circle at 30% 85%, rgba(255, 111, 165, 0.14) 0 120px, transparent 121px);
 }
 
 .app {
-  max-width: 420px;
+  position: relative;
+  max-width: 440px;
   margin: 0 auto;
-  padding: 24px 16px calc(32px + env(safe-area-inset-bottom));
+  padding: 28px 18px calc(36px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   text-align: center;
 }
 
+/* ---------- Шапка ---------- */
+.header { margin-top: 4px; }
+
+.kicker {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rose-soft);
+  opacity: 0.8;
+}
+
 .title {
-  margin: 8px 0 0;
-  font-size: 28px;
-  letter-spacing: 1px;
+  margin: 4px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34px;
+  font-weight: 700;
+  background: linear-gradient(180deg, #fff, var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* ---------- Машина ---------- */
 .machine {
+  position: relative;
   width: 100%;
-  padding: 18px 12px;
-  border-radius: 24px;
-  background: linear-gradient(180deg, #ff8fb8, #c2326b);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+  padding: 22px 16px 20px;
+  border-radius: 32px;
+  background: linear-gradient(160deg, #ff9fc4 0%, #e0488a 45%, #a4245e 100%);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -6px 14px rgba(0, 0, 0, 0.25);
 }
+
+.machine.shake { animation: shake 0.5s ease-in-out; }
 
 .reels {
   display: flex;
@@ -50,89 +92,248 @@ html, body {
 
 .reel {
   flex: 1;
-  height: 110px;
+  aspect-ratio: 3 / 4;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 56px;
-  background: #fff8fb;
-  border-radius: 16px;
-  box-shadow: inset 0 -6px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffafd 0%, #ffe9f2 100%);
+  box-shadow: inset 0 8px 14px rgba(120, 20, 70, 0.22), inset 0 -4px 10px rgba(120, 20, 70, 0.12);
+}
+
+.reel img {
+  width: 84%;
+  height: auto;
+  display: block;
   user-select: none;
+  -webkit-user-drag: none;
 }
 
-.reel.spinning {
-  filter: blur(1.5px);
+.reel.spinning img {
+  animation: roll 0.12s linear infinite;
+  filter: blur(1.2px);
 }
 
-.reel.stop {
-  animation: pop 0.35s ease-out;
+.reel.stop img {
+  animation: land 0.5s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 
-@keyframes pop {
-  0% { transform: scale(0.85); }
-  60% { transform: scale(1.08); }
-  100% { transform: scale(1); }
+/* Блик поверх стекла */
+.glass {
+  position: absolute;
+  inset: 22px 16px 20px;
+  border-radius: 18px;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 35%);
 }
 
-/* ---------- Кнопки ---------- */
+/* ---------- Кнопка ---------- */
 .spin-btn {
-  margin-top: 8px;
+  position: relative;
   width: 100%;
-  padding: 16px;
+  padding: 18px;
+  font: inherit;
   font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-weight: 800;
+  letter-spacing: 3px;
   color: #3b0a24;
-  background: linear-gradient(180deg, var(--gold), #f0a93c);
+  background: linear-gradient(180deg, #ffe89a, var(--gold-deep));
   border: none;
-  border-radius: 16px;
-  box-shadow: 0 6px 0 #b8741c, 0 10px 20px rgba(0, 0, 0, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 7px 0 #a86a12, 0 14px 26px rgba(0, 0, 0, 0.4);
   cursor: pointer;
-  transition: transform 0.08s;
+  transition: transform 0.08s, box-shadow 0.08s;
 }
 
-.spin-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #b8741c; }
-.spin-btn:disabled { opacity: 0.6; cursor: default; }
+.spin-btn:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 #a86a12, 0 6px 12px rgba(0, 0, 0, 0.35);
+}
+
+.spin-btn:disabled { opacity: 0.7; cursor: default; }
+
+/* ---------- Результат (проигрыш) ---------- */
+.result {
+  width: 100%;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 209, 224, 0.35);
+  font-size: 18px;
+  animation: fadeUp 0.4s ease-out;
+}
+
+/* ---------- Низ ---------- */
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
 
 .counter {
   margin: 0;
-  opacity: 0.8;
   font-size: 14px;
+  opacity: 0.75;
 }
 
 .reset-btn {
   background: none;
   border: none;
-  color: var(--text);
-  opacity: 0.5;
+  color: var(--rose-soft);
+  opacity: 0.6;
+  font: inherit;
   font-size: 13px;
   cursor: pointer;
   padding: 4px;
 }
 
-/* ---------- Приз ---------- */
-.prize {
+/* ---------- Окно выигрыша ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(20, 4, 14, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-card {
+  position: relative;
+  overflow: hidden;
   width: 100%;
-  margin-top: 8px;
-  padding: 18px 16px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 215, 106, 0.5);
-  font-size: 20px;
-  line-height: 1.35;
-  animation: fadeIn 0.5s ease-out;
+  max-width: 340px;
+  padding: 30px 24px 26px;
+  border-radius: 28px;
+  background: linear-gradient(170deg, #fff6fa 0%, #ffd1e0 100%);
+  color: #3b0a24;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 3px var(--gold);
+  animation: popIn 0.55s cubic-bezier(0.2, 1.3, 0.4, 1);
 }
 
-.prize.jackpot {
-  background: linear-gradient(180deg, rgba(255, 215, 106, 0.35), rgba(255, 111, 165, 0.25));
-  border-color: var(--gold);
+.modal-glow {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  width: 240px;
+  height: 240px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(255, 215, 106, 0.7), transparent 70%);
+  pointer-events: none;
+}
+
+.win-icon {
+  position: relative;
+  width: 130px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  animation: bob 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 10px 14px rgba(120, 20, 70, 0.35));
+}
+
+.win-title {
+  position: relative;
+  margin: 14px 0 6px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  color: #a4245e;
+}
+
+.win-prize {
+  position: relative;
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.win-note {
+  position: relative;
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
+.win-close {
+  position: relative;
+  width: 100%;
+  padding: 14px;
+  font: inherit;
+  font-size: 17px;
   font-weight: 700;
+  color: #3b0a24;
+  background: linear-gradient(180deg, #ffe89a, var(--gold-deep));
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 5px 0 #a86a12;
+  cursor: pointer;
 }
 
-.hidden { display: none; }
+/* ---------- Конфетти ---------- */
+.confetti {
+  position: fixed;
+  top: -20px;
+  z-index: 11;
+  width: 10px;
+  height: 14px;
+  border-radius: 3px;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
 
-@keyframes fadeIn {
+/* ---------- Анимации ---------- */
+@keyframes roll {
+  0%   { transform: translateY(-30%); }
+  50%  { transform: translateY(30%); }
+  100% { transform: translateY(-30%); }
+}
+
+@keyframes land {
+  0%   { transform: scale(0.8) translateY(-14px); }
+  60%  { transform: scale(1.08) translateY(4px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-9px); }
+  40% { transform: translateX(9px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(5px); }
+}
+
+@keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(720deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel.spinning img, .win-icon, .machine.shake { animation: none; }
 }

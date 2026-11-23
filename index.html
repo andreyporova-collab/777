@@ -5,29 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Наш слот 💖</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Telegram Web App SDK: обязательно для работы внутри Telegram -->
+  <!-- Telegram Web App SDK: нужен для работы внутри Telegram -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+  <div class="bg-hearts" aria-hidden="true"></div>
+
   <main class="app">
-    <h1 class="title">Наш слот 💖</h1>
+    <header class="header">
+      <p class="kicker">наш вечер</p>
+      <h1 class="title">Слот-удача</h1>
+    </header>
 
-    <div class="machine">
+    <section class="machine" id="machine">
       <div class="reels">
-        <div class="reel" aria-live="off">💖</div>
-        <div class="reel" aria-live="off">💖</div>
-        <div class="reel" aria-live="off">💖</div>
+        <div class="reel"><img alt="" src="assets/prizes/candy.svg" /></div>
+        <div class="reel"><img alt="" src="assets/prizes/candy.svg" /></div>
+        <div class="reel"><img alt="" src="assets/prizes/candy.svg" /></div>
       </div>
-    </div>
+      <div class="glass" aria-hidden="true"></div>
+    </section>
 
-    <button id="spin" class="spin-btn">КРУТИТЬ</button>
-    <p class="counter">Следующий спин: <span id="counter">1</span> из <span id="total"></span></p>
-    <button id="reset" class="reset-btn" type="button">↺ начать сначала</button>
+    <button id="spin" class="spin-btn" type="button">
+      <span>КРУТИТЬ</span>
+    </button>
 
-    <div id="prize" class="prize hidden" role="status">
-      <p id="prize-text"></p>
+    <p id="result" class="result hidden" role="status"></p>
+
+    <div class="footer">
+      <p class="counter">Следующий спин: <span id="counter">1</span> из <span id="total"></span></p>
+      <button id="reset" class="reset-btn" type="button">начать сначала</button>
     </div>
   </main>
+
+  <!-- Окно выигрыша -->
+  <div id="win" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="win-title">
+    <div class="modal-card">
+      <div class="modal-glow" aria-hidden="true"></div>
+      <img id="win-icon" class="win-icon" alt="" src="" />
+      <h2 id="win-title" class="win-title">Поздравляю!</h2>
+      <p class="win-prize">Ты выиграла: <strong id="win-prize"></strong></p>
+      <p id="win-note" class="win-note"></p>
+      <button id="win-close" class="win-close" type="button">Ура!</button>
+    </div>
+  </div>
 
   <script src="schedule.js"></script>
   <script src="app.js"></script>
