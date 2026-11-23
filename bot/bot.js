@@ -6,6 +6,8 @@
 //   WEBAPP_URL  — HTTPS-адрес, где лежит слот (например GitHub Pages)
 //   TG_API_BASE — необязательно, для тестов с подменой API
 
+const { PRIZE_MESSAGES, FOOTER } = require('./prizes');
+
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const WEBAPP_URL = process.env.WEBAPP_URL;
 const API_BASE = process.env.TG_API_BASE || 'https://api.telegram.org';
@@ -33,25 +35,59 @@ async function callApi(method, body = {}) {
 }
 
 const START_TEXT =
-  'Привет! 💖 Нажми кнопку, чтобы крутить наш слот.\n' +
+  'Привет! 💖 Нажми кнопку внизу, чтобы крутить наш слот.\n' +
   'Каждый спин открывает приз.';
 
-async function handleMessage(message) {
-  const chatId = message.chat.id;
-  const text = (message.text || '').trim();
+// Кнопка-клавиатура с web_app: только из неё мини-приложение может отправить данные боту
+const LAUNCH_KEYBOARD = {
+  keyboard: [[{ text: '🎰 Крутить слот', web_app: { url: WEBAPP_URL } }]],
+  resize_keyboard: true,
+};
 
-  if (text.startsWith('/start')) {
-    await callApi('sendMessage', {
-      chat_id: chatId,
-      text: START_TEXT,
-      reply_markup: {
-        inline_keyboard: [[{ text: '🎰 Крутить слот', web_app: { url: WEBAPP_URL } }]],
-      },
-    });
+async function handleStart(chatId) {
+  await callApi('sendMessage', {
+    chat_id: chatId,
+    text: START_TEXT,
+    reply_markup: LAUNCH_KEYBOARD,
+  });
+}
+
+// Слот сообщил о выигрыше: отправляем фото приза и подпись
+async function handleWin(chatId, rawData) {
+  let payload;
+  try {
+    payload = JSON.parse(rawData);
+  } catch {
+    payload = null;
+  }
+
+  const entry = payload?.type === 'win' ? PRIZE_MESSAGES[payload.prize] : null;
+  if (!entry) {
+    await callApi('sendMessage', { chat_id: chatId, text: 'Не смог распознать приз 🤔' });
     return;
   }
 
-  // Любой другой текст — просто подсказка
+  await callApi('sendPhoto', {
+    chat_id: chatId,
+    photo: new URL(entry.photo, WEBAPP_URL).href,
+    caption: `${entry.caption}\n\n${FOOTER}`,
+  });
+}
+
+async function handleMessage(message) {
+  const chatId = message.chat.id;
+
+  if (message.web_app_data) {
+    await handleWin(chatId, message.web_app_data.data);
+    return;
+  }
+
+  const text = (message.text || '').trim();
+  if (text.startsWith('/start')) {
+    await handleStart(chatId);
+    return;
+  }
+
   await callApi('sendMessage', {
     chat_id: chatId,
     text: 'Напиши /start, чтобы открыть слот.',

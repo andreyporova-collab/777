@@ -121,8 +121,12 @@ function showLose() {
   machine.classList.add('shake');
 }
 
+// Выигрыш, о котором ещё не сообщили боту
+let pendingWin = null;
+
 function showWin(prizeId) {
   const prize = PRIZES[prizeId];
+  pendingWin = prizeId;
   winIcon.src = prize.icon;
   winPrize.textContent = prize.name;
   winEl.classList.remove('hidden');
@@ -143,8 +147,19 @@ function confetti() {
   }
 }
 
+// Закрытие окна выигрыша: отправляем приз боту.
+// sendData закрывает мини-приложение, поэтому делаем это только после того, как игрок всё увидел.
 function closeWin() {
   winEl.classList.add('hidden');
+  if (pendingWin) {
+    const payload = JSON.stringify({ type: 'win', prize: pendingWin });
+    pendingWin = null;
+    if (tg?.sendData) {
+      tg.sendData(payload);
+    } else {
+      console.log('Вне Telegram отправка пропущена:', payload);
+    }
+  }
 }
 
 function reset() {
