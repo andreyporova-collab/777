@@ -1,0 +1,13 @@
+{
+  "name": "slot-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Telegram-бот, который открывает романтический слот (Mini App)",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
