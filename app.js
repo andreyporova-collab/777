@@ -73,7 +73,7 @@ function renderState() {
   counterEl.textContent = isFinished() ? SCRIPT.length : index + 1;
   if (isFinished()) {
     spinBtn.disabled = true;
-    spinLabel.textContent = 'СЦЕНАРИЙ ОКОНЧЕН';
+    spinLabel.textContent = 'ПОПЫТОК НЕ ОСТАЛОСЬ!';
   } else {
     spinBtn.disabled = spinning;
     spinLabel.textContent = 'КРУТИТЬ';
