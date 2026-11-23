@@ -5,7 +5,8 @@
   "description": "Telegram-бот, который открывает романтический слот (Mini App)",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "profile": "node profile.js"
   },
   "engines": {
     "node": ">=18"
