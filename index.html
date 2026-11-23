@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Наш слот 💖</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Telegram Web App SDK: обязательно для работы внутри Telegram -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="app">
+    <h1 class="title">Наш слот 💖</h1>
+
+    <div class="machine">
+      <div class="reels">
+        <div class="reel" aria-live="off">💖</div>
+        <div class="reel" aria-live="off">💖</div>
+        <div class="reel" aria-live="off">💖</div>
+      </div>
+    </div>
+
+    <button id="spin" class="spin-btn">КРУТИТЬ</button>
+    <p class="counter">Следующий спин: <span id="counter">1</span> из <span id="total"></span></p>
+    <button id="reset" class="reset-btn" type="button">↺ начать сначала</button>
+
+    <div id="prize" class="prize hidden" role="status">
+      <p id="prize-text"></p>
+    </div>
+  </main>
+
+  <script src="schedule.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

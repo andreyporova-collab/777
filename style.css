@@ -1,0 +1,138 @@
+* { box-sizing: border-box; }
+
+:root {
+  --bg1: #2a0a1f;
+  --bg2: #5b1a40;
+  --accent: #ff6fa5;
+  --gold: #ffd76a;
+  --text: #fff4f8;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top, var(--bg2), var(--bg1)) fixed;
+}
+
+.app {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 24px 16px calc(32px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.title {
+  margin: 8px 0 0;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+/* ---------- Машина ---------- */
+.machine {
+  width: 100%;
+  padding: 18px 12px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #ff8fb8, #c2326b);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+}
+
+.reels {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.reel {
+  flex: 1;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  background: #fff8fb;
+  border-radius: 16px;
+  box-shadow: inset 0 -6px 12px rgba(0, 0, 0, 0.15);
+  user-select: none;
+}
+
+.reel.spinning {
+  filter: blur(1.5px);
+}
+
+.reel.stop {
+  animation: pop 0.35s ease-out;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.85); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Кнопки ---------- */
+.spin-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 16px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #3b0a24;
+  background: linear-gradient(180deg, var(--gold), #f0a93c);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 6px 0 #b8741c, 0 10px 20px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.08s;
+}
+
+.spin-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #b8741c; }
+.spin-btn:disabled { opacity: 0.6; cursor: default; }
+
+.counter {
+  margin: 0;
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+.reset-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  opacity: 0.5;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ---------- Приз ---------- */
+.prize {
+  width: 100%;
+  margin-top: 8px;
+  padding: 18px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 215, 106, 0.5);
+  font-size: 20px;
+  line-height: 1.35;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.prize.jackpot {
+  background: linear-gradient(180deg, rgba(255, 215, 106, 0.35), rgba(255, 111, 165, 0.25));
+  border-color: var(--gold);
+  font-weight: 700;
+}
+
+.hidden { display: none; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
