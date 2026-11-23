@@ -183,6 +183,41 @@ function closeWin() {
   }
 }
 
+// Скрытый сброс для теста: удерживать «наш вечер» 5 секунд.
+// Сценарий начинается заново, без подтверждения и без подсказок на экране.
+const HOLD_RESET_MS = 5000;
+const kickerEl = document.querySelector('.kicker');
+let holdTimer = null;
+
+function resetScript() {
+  if (spinning) return;
+  index = 0;
+  saveIndex();
+  resultEl.classList.add('hidden');
+  winEl.classList.add('hidden');
+  pendingWin = null;
+  renderState();
+}
+
+function startHold(e) {
+  if (e.button > 0) return;
+  clearTimeout(holdTimer);
+  holdTimer = setTimeout(() => {
+    holdTimer = null;
+    resetScript();
+    tg?.HapticFeedback?.notificationOccurred('success');
+  }, HOLD_RESET_MS);
+}
+
+function cancelHold() {
+  clearTimeout(holdTimer);
+  holdTimer = null;
+}
+
+kickerEl.addEventListener('pointerdown', startHold);
+['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => kickerEl.addEventListener(ev, cancelHold));
+kickerEl.addEventListener('contextmenu', (e) => e.preventDefault());
+
 spinBtn.addEventListener('click', spin);
 winClose.addEventListener('click', closeWin);
 winEl.addEventListener('click', (e) => { if (e.target === winEl) closeWin(); });
