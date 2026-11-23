@@ -1,7 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-  <polygon points="26,38 8,48 26,58" fill="#ffb3d1"/>
-  <polygon points="70,38 88,48 70,58" fill="#ffb3d1"/>
-  <ellipse cx="48" cy="48" rx="24" ry="18" fill="#ff5c9e"/>
-  <path d="M34 36 q14 12 28 0 M34 60 q14 -12 28 0" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="3" stroke-linecap="round"/>
-  <ellipse cx="40" cy="40" rx="6" ry="3" fill="#ffffff" fill-opacity="0.5" transform="rotate(-20 40 40)"/>
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#ff4fb0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+
+    <path d="M26 40 L8 48 L26 56 Z"/>
+    <path d="M70 40 L88 48 L70 56 Z"/>
+    <ellipse cx="48" cy="48" rx="24" ry="17"/>
+    <path d="M36 36 q12 12 24 0 M36 60 q12 -12 24 0"/>
+  </g>
 </svg>

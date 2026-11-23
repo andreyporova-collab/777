@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-  <path d="M48 56 V88 M48 74 q-14 -4 -16 -14 M48 80 q14 -4 16 -14" fill="none" stroke="#4fae6e" stroke-width="4" stroke-linecap="round"/>
-  <ellipse cx="34" cy="60" rx="8" ry="4" transform="rotate(-30 34 60)" fill="#6fcf8f"/>
-  <ellipse cx="62" cy="66" rx="8" ry="4" transform="rotate(30 62 66)" fill="#6fcf8f"/>
-  <g fill="#ff5c8a">
-    <circle cx="32" cy="34" r="12"/><circle cx="48" cy="26" r="13"/><circle cx="64" cy="34" r="12"/>
-    <circle cx="48" cy="44" r="11"/>
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#ff4fb0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+
+    <circle cx="32" cy="34" r="9"/><circle cx="50" cy="26" r="10"/><circle cx="66" cy="36" r="9"/>
+    <path d="M48 58 V86 M48 72 q-14 -2 -18 -12 M48 78 q14 -2 18 -12"/>
   </g>
-  <g fill="#ffd1e0">
-    <circle cx="32" cy="34" r="5"/><circle cx="48" cy="26" r="6"/><circle cx="64" cy="34" r="5"/>
-  </g>
-  <path d="M40 74 L48 84 L56 74 Z" fill="#c2326b"/>
 </svg>
