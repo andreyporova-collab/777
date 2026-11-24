@@ -4,10 +4,10 @@ name: Telegram bot
 # Один job длится до ~5.5 часов, затем следующий запуск по расписанию подхватывает polling.
 # Новые запуски встают в очередь (concurrency), два бота одновременно не работают.
 
+# БОТ ВЫКЛЮЧЕН: расписание убрано, job ниже отключён условием if: false.
+# Чтобы включить снова, верни schedule и убери if.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/30 * * * *'
 
 concurrency:
   group: telegram-bot
@@ -18,6 +18,7 @@ permissions:
 
 jobs:
   run-bot:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 350
     steps:
